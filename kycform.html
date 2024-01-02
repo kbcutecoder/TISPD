@@ -171,5 +171,127 @@
 <script src="assets/js/main.js"></script>
 
 
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title alice" id="staticBackdropLabel">Sending Data</h5>
+        <button type="button" id="mclosebtn" class="btn-close disabled" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body alice">
+        
+      </div>
+      <div class="modal-footer alice">
+        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+
+
+
+//student class structure  
+class student {
+constructor(firstname,lastname,fathername,email,address,phoneno,aadhaar="Contact Form Query")
+    {
+    this.firstname=firstname;
+    this.lastname=lastname;
+    this.fathername=fathername;
+    this.email=email;
+    this.address=address;
+    this.phoneno=phoneno;
+    this.aadhaar=aadhaar;
+ }
+}
+
+//Upload function for adding record in dataabase which will be called by add function
+var apiurl="https://us-central1-maximal-security-services.cloudfunctions.net/submitData";
+// Local host testing
+// var apiurl="http://127.0.0.1:5001/maximal-security-services/us-central1/submitData";
+
+
+function upload() {
+    // alert(JSON.stringify(st));
+
+    // return
+  fetch(apiurl, {
+    method: 'POST',
+    body: JSON.stringify(st),
+    headers: {
+      'Content-type': 'application/json',
+    },
+  })
+    .then(function (response) {
+      if (!response.ok) {
+        // Check for HTTP error status
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      // Check for a success property in the response data
+      if (data.success) {
+        $('.modal-title').html('Data Sent.');
+        $('.modal-body').html('<h3 class="text-success alice">Your Form Has Been Successfully Submitted! Our Representative Will Contact You Soon.</h3>');
+       
+        // alert('Your request was received successfully.');
+      } else {
+        // Handle server-side errors or unexpected response
+        throw new Error('Server error: ' + data.message);
+      }
+    })
+    .catch(function (error) {
+      // Handle errors including network errors and server errors
+      $('.modal-title').html('Data Sending Fail...');
+      $('.modal-body').html('<h3 class="text-danger alice">Something went wrong. Please try again later. ' + error.message+'</h3>');
+    });
+}
+// Function for adding data to listbox and database
+function add()
+{
+
+  if (Form.checkValidity()) 
+  {
+        AOS.init({disable:true});
+        $('#staticBackdrop').modal('show');
+        $('.modal-title').html('Sending Data...');
+        $('.modal-body').html('<p class="alice">Please wait until data is submitted and confirmation is received. Please do not close the browser window.</p>');
+       
+          st=
+              new student(
+                firstname.value,
+                lastname.value,
+                fathername.value,
+                email.value,
+                address.value,
+                phoneno.value,
+                aadhaar.value,
+                  );
+
+          upload();
+          $('#mclosebtn').removeClass('disabled');
+          AOS.init({disable:false});
+          return;
+  }
+}
+
+
+//Function for showing sutdent object (like json format)
+function showobj()
+{
+demo.innerHTML= JSON.stringify(st);
+
+}
+
+</script>
+
+
   </body>
   </html>
